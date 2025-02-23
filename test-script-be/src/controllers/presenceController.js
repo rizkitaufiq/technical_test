@@ -99,7 +99,7 @@ const presenceController = {
 
   async approvePresence(req, res) {
     try {
-      const { presenceId, isApproved } = req.body;
+      const { presenceId, isApprove } = req.body;
       const supervisorNPP = req.user.npp;
 
       const supervisorQuery = `SELECT id FROM users WHERE npp = $1`;
@@ -126,7 +126,7 @@ const presenceController = {
     `;
 
       const updateResult = await pool.query(updateQuery, [
-        isApproved,
+        isApprove,
         presenceId,
         supervisorNPP,
       ]);
