@@ -19,7 +19,7 @@ This is a RESTful API for an presence system built using Node.js and PostgreSQL.
 
 - Clone the repository:
 
-git clone <repository-url>
+git clone --single-branch --branch <branch_name> <repository_url>
 
 - Navigate to the project directory:
 
@@ -53,13 +53,13 @@ POST /api/login - User login (returns JWT token)
 
 - Presence
 
-POST /api/presence - Record attendance (Requires token)
+POST /api/presence - Record presence (Requires token)
 
-GET /api/presence/get - View user attendance records
+GET /api/presence/get - View user presence records
 
 - Supervisor Approval
 
-POST /attendance/approve - Approve attendance (Supervisor only)
+POST /api/presence/approve - Approve presence (Supervisor only)
 
 
 #Technologies Used
