@@ -96,6 +96,62 @@ const presenceController = {
         .end(JSON.stringify({ message: "A server error occurred" }));
     }
   },
+
+  async approvePresence(req, res) {
+    try {
+      const { presenceId, isApproved } = req.body;
+      const supervisorNPP = req.user.npp;
+
+      const supervisorQuery = `SELECT id FROM users WHERE npp = $1`;
+      const supervisorResult = await pool.query(supervisorQuery, [
+        supervisorNPP,
+      ]);
+
+      if (supervisorResult.rows.length === 0) {
+        return res.writeHead(403, { "Content-Type": "application/json" }).end(
+          JSON.stringify({
+            message: "Supervisor not found or does not have permission",
+          })
+        );
+      }
+
+      const supervisorId = supervisorResult.rows[0].id;
+
+      const updateQuery = `
+      UPDATE epresence 
+      SET is_approve = $1 
+      WHERE id = $2 
+      AND id_users IN (SELECT id FROM users WHERE npp_supervisor = $3)
+      RETURNING *;
+    `;
+
+      const updateResult = await pool.query(updateQuery, [
+        isApproved,
+        presenceId,
+        supervisorNPP,
+      ]);
+
+      if (updateResult.rowCount === 0) {
+        return res.writeHead(403, { "Content-Type": "application/json" }).end(
+          JSON.stringify({
+            message: "Do not have permission to approve this presence",
+          })
+        );
+      }
+
+      return res.writeHead(200, { "Content-Type": "application/json" }).end(
+        JSON.stringify({
+          message: "Presence updated successfully",
+          data: updateResult.rows[0],
+        })
+      );
+    } catch (error) {
+      console.error("Error updating presence:", error);
+      return res
+        .writeHead(500, { "Content-Type": "application/json" })
+        .end(JSON.stringify({ message: "A server error occurred" }));
+    }
+  },
 };
 
 module.exports = presenceController;

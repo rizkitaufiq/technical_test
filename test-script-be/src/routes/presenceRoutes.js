@@ -14,6 +14,12 @@ const presenceRoutes = (req, res) => {
     );
   }
 
+  if (req.method === "POST" && req.url === "/api/presence/approve") {
+    return authMiddleware(req, res, () =>
+      presenceController.approvePresence(req, res)
+    );
+  }
+
   res
     .writeHead(404, { "Content-Type": "application/json" })
     .end(JSON.stringify({ message: "Route not found" }));
