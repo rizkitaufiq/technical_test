@@ -16,7 +16,7 @@ const presenceController = {
           return res.writeHead(400, { "Content-Type": "application/json" }).end(
             JSON.stringify({
               status: "error",
-              message: "Presence type must be 'IN' atau 'OUT'",
+              message: "Presence type must be 'IN' or 'OUT'",
             })
           );
         }
